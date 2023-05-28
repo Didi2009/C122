@@ -1,7 +1,8 @@
 import cv2
 import time
 import math
-
+p1=530
+p2=300
 video = cv2.VideoCapture("bb3.mp4")
 
 # Load tracker 
@@ -25,6 +26,14 @@ def drawbox(img, bbox):
     cv2.putText(img,"Tracking",(75,90),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0,255,0),2)
 def goalTrack(img, bbox):
     x,y,w,h=int(bbox[0]), int(bbox[1]), int(bbox[2])
+    c1=x+int(w/2)
+    c2=y+int(y/2)
+    cv2.circle(img,(c1,c2),2,(0,0,255),5)
+    cv2.circle(img,(int(p1),int(p2)),2,(0,255,0),3)
+    distance=math.sqrt(((c1-p1)**2)+(c2-p2)**2)
+    print(distance)
+    if distance<=20:
+        cv2.putText((img,"goal",(300,90),cv2.FONT_HERSHEY_SIMPLEX))
 while True:
     check,img = video.read()   
     success,bbox= tracker.update(img)
@@ -32,6 +41,7 @@ while True:
         drawbox(img,bbox)
     else:
         cv2.putText(img,"Lost",(75,90),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0,0,255),2)
+    goalTrack(img, bbox)
 
     cv2.imshow("result",img)
             
